@@ -27,6 +27,8 @@ I set about building a Repository and UoW to hold `Clients` and `Stocks` in vola
 
 I felt a bit dirty about this as class attributes shared across all past, present and future instantiations of a class felt a bit weird. This wasn't helped by internet searches wherein I found of conflicting examples of writing a Repository and UoW, and I became a little frustrated with trying to do "the right thing" first time, which caused some procrastination.
 
+It took some refining but it did indeed work! I changed the `add_users` and `add_stocks` functions on the `Exchange` (called from `main.py`) to set up a UoW, stage the new objects and commit them to storage. Similarly the application could check a user or transaction ID by setting up a UoW and querying the Repository.
+
 
 
 
