@@ -21,9 +21,9 @@ Since my last update I had added the concept of a `Client` (user) which worked s
 * `io` -- I didn't like the suggestion of using the `services` module to house Repositories and UoWs as found in the Cosmic Python examples as they didn't seem to fit my personal interpretation of a service, so I created an `io` module to organise "input and output things". I imagine message parsing and file handling will all live in here too
 * `adapters` -- following the "Ports and Adapters" ethos, this code is responsible for plugging frameworks, ORMs and other such external matters into the application
 
-The most interesting thing about this exercise was that I quite quickly realised the `Exchange` domain entity was in fact a service layer (offering exchange-related functionality) to the `main.py` application entrypoint. If nothing else, merely thinking about what a cleaner architecture looks like will encourage picking better domain abstractions and make the responsibilities of intra-application services more obvious.
+The most interesting thing about this exercise was that I quite quickly realised the `Exchange` domain entity was in fact a service layer. The `Exchange` offers exchange-related functionality to the `main.py` application entrypoint. If nothing else, merely thinking about what a cleaner architecture looks like in your project tree will encourage better domain abstractions and make the responsibilities of intra-application services more obvious.
 
-I figured it would be easiest to abstract how the `Stocks` are stored first as they aren't touched very often. There are plenty of (sometimes conflicting) examples of writing a Repository and UoW, and I became a little frustrated with trying to do "the right thing" first time.
+I set about building a Repository and UoW to hold `Clients` and `Stocks` in volatile memory, just like in my first program but instead of interacting with a Python data structure directly, the application would have to interact with the Repository. There are plenty of (sometimes conflicting) examples of writing a Repository and UoW, and I became a little frustrated with trying to do "the right thing" first time. I based my first Repository and UoW on the Cosmic Python book with a little extra flair.
 
 To quote an earlier commit message:
 
