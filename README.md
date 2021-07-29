@@ -9,8 +9,17 @@ After a bit of Googling and refining my terminology, I found the question I was 
 
 I implemented a [basic procedural Python program](https://github.com/SAMTOMINDUSTRYS/stex2s-python/commit/c0dbebfd9138e85c89fb623ad16dc029a7ad86d3) to play with order matching. I won't walkthrough it here, but to highlight:
 
-* I used `dataclass` for the first time, skipping a bunch of boring boilerplate Python for classes that hold 
+* I used `dataclass` for the first time, skipping a bunch of boring boilerplate Python for classes that hold entities
+* The entrypoint for the system was the `Exchange`, which held a map of `MarketStalls` (a place to sell a particular stock symbol)
+* Each `MarketStall` had an `OrderBook`, which maintained its own list of buy and sell `Orders`, as well as implementing the matching algorithm
+* [My first implementation of Priority-Time matching](https://github.com/SAMTOMINDUSTRYS/stex2s-python/blob/c0dbebfd9138e85c89fb623ad16dc029a7ad86d3/stexs-py/stexs.py#L92-L147) handled all four cases of basic buy fulfillment:
+    * The best sell has more volume than needed for the buy (so the remaining volume is split into a new open order)
+    * The buy can be exactly fulfilled by the sell (volumes match)
+    * The best sell has less volume than needed for the buy (keep iterating through the best sells under there is enough volume), unless...
+    * ...the buy volume cannot be reached and the buy is not fulfilled
+* The body of the program allowed me to initialise an `Exchange`, list some `Stock` and then send messages to append buys and sell `Orders` to the correct `MarketStall`'s `OrderBook`, returning any viable `Trades` conducted as a result of the new order
 
+I had always thought of a stock exchange as a magic mystery box, but the rules that drive basic trade are quite simple. Of course, a real exchange handles a lot more complexity than what is implemented here - the LSE documents describe a whole host of order types, rules and auction types that we'll have to wrap our heads around later - but I was really surprised at how easy it was to get this working. Clearly, the hard work isn't on the business logic, but writing code that'll stand up to tens of thousands of orders a second, in a reliable way.
 
 
 ## Welcome
