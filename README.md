@@ -13,7 +13,7 @@ I won't go into detail here (because every person and their dog seems to have th
 * A **Repository** offers an interface for an application to manipulate a collection of objects (eg. add, get) while hiding how and where the data is stored, effectively keeping your application ignorant of how data is persisted (eg. in memory, a database, a file)
 * A **Unit of Work** (UoW) offers a context in which objects that have changed are noted, and those changes can be persisted (or discarded) as part of a transaction in your application
 
-I set about building a Repository and UoW to hold the `Clients` and `Stocks` in memory, just like in my first program, but instead of interacting with a Python data structure directly, the application would have to interact with the Repository. I based my first Repository and UoW on the mock testing repo from the Cosmic Python book, but with extra flair; rather than merely mocking a Repository and holding a temporary list, I defined a class which held a dictionary named `_objects` as a class attribute, such that any instantiation of the Repository would be able to interact with the `_objects` stored inside. As suggested by the book, I made the UoW a Python context manager. A context manager requires an `__enter__` dunder method to setup some context (my UoW just returns itself) and an `__exit__` dunder method to specify what happens when you leave the context (my UoW calls its `rollback` function to discard uncommited changes). I'd never written one of these before, but it seems perfect for this case of 
+I set about building a Repository and UoW to hold the `Clients` and `Stocks` in memory, just like in my first program, but instead of interacting with a Python data structure directly, the application would have to interact with the Repository. I based my first Repository and UoW on the mock testing repo from the Cosmic Python book, but with extra flair; rather than merely mocking a Repository and holding a temporary list, I defined a class which held a dictionary named `_objects` as a class attribute, such that any instantiation of the Repository would be able to interact with the `_objects` stored inside. As suggested by the book, I made the UoW a Python context manager. A context manager requires an `__enter__` dunder method to setup some context (my UoW just returns itself) and an `__exit__` dunder method to specify what happens when you leave the context (my UoW calls its `rollback` function to discard uncommited changes). I'd never written one of these before, but it seems perfect for this case of starting and ending a "session".
 
 I felt a bit dirty about my Repository, as class attributes shared across all past, present and future instantiations of a class as a means of persisting data felt a bit weird -- it's easy to accidentally create an instance and shadow or overwrite the class variable. This wasn't helped by internet searches wherein I found of conflicting examples of writing a Repository and UoW. I became a little frustrated with trying to do "the right thing" first time, which caused some procrastination.
 
@@ -29,16 +29,16 @@ Persevering, I took the example from the Cosmic Python book much further. I gave
     * The `_staged_objects[user_id]` overwrites the `_objects[user_id]` and `_object_version[user_id]` is incremented
 * `update_user` exits the `with` block, closing the UoW context (calling `uow.rollback` automatically, but there is nothing to rollback)
 
-It took some refining but it did indeed work! When the `uow` is instantiated by a service, it creates a new `GenericMemoryRepository` and specifies a prefix to be added to all the keys (for the `_objects` dict and so on), meaning the the `GenericMemoryRepository` can be used by any model in our domain (`Stocks` and `Users`) without worrying about key clases. These functions are all overkill as we'll likely migrate to some other means to persist storage, but it was important for me to see how a Repostory and UoW would work, even if just to abstract a Python list out of `main.py` or the `Exchange` class to an interface.
+It took some refining but it did indeed work! When the `uow` is instantiated by a service, it creates a new `GenericMemoryRepository` and specifies a prefix to be added to all the keys (for the `_objects` dict and so on), meaning the the `GenericMemoryRepository` can be used by any model in our domain (`Stocks` and `Users`) without worrying about key clases. This Repository is overkill as we'll likely migrate to some other means to persist storage, but it was important for me to see how a Repostory and UoW would work, even if just to abstract a Python list out of `main.py` or the `Exchange` class to an interface. I struggled with the idea of not "assigning" some memory in `main.py` or the service layer. 
 
-While this worked, it felt like a lot of effort to manage a dictionary.
+While this worked, it felt like a lot of effort to manage a dictionary, and I could certainly see the appeal of using a framework that takes all this work off you instead. I decided the way to test whether this was a worthwhile endeavour was to immediately write a new Repository and UoW to access an `sqlite` database and see how badly the `Exchange` was impacted.
 
 
 
 
 
 The main thing that sticks from the three books I have read so far is the principle of inverting dependencies.
-
+It was a bit alien to have this memory just floating around in a class so far from the entrypoint of the application.
 I've learned two things this week:
 * Until now, I have failed to harness the real power of object orientated programming, instead writing procedural programs that happened to have objects
 * Less code is not clean code, indeed more code seems to be the recipe to adaptable systems
