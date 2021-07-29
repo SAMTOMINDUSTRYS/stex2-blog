@@ -3,7 +3,10 @@
 ## Trying out the Repository and the Unit of Work collaboration pattern
 **2021-07-29 / exchange,server,python / Sam**
 
-*Architecture Patterns with Python* introduced me to the **Repository** and closely related **Unit of Work** patterns.
+*Clean Architecture* talked a little about how a framework is merely a development detail. I found this quite confusing and unhelpful. As someone who has spent a year working on a "Django application" I couldn't see how I was supposed to engineer applications without being beholden to my framework.
+The reason I actually bought *Architecture Patterns with Python* was its appendix showing how you might integrate your system into Django.
+*Architecture Patterns with Python* also introduced me to the **Repository** and closely related **Unit of Work** patterns.
+
 
 ## Sound the opening foghorn
 **2021-07-29 / exchange,server,python / Sam**
