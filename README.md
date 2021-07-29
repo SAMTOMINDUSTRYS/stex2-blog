@@ -15,13 +15,13 @@ I won't go into detail here (because every person and their dog seems to have th
 
 I set about building a Repository and UoW to hold `Clients` and `Stocks` in volatile memory, just like in my first program but instead of interacting with a Python data structure directly, the application would have to interact with the Repository. I based my first Repository and UoW on the mock testing repo from the Cosmic Python book, but with a little extra flair; rather than merely mocking a Repository and holding a temporary list, I defined a class which held a dictionary named `_objects` as a class attribute, such that any instantiation of the Repository would be able to interact with the `_objects` stored inside. As suggested by the book, I made the UoW a Python context manager. A context manager requires an `__enter__` dunder method to setup some context (my UoW just returns itself) and an `__exit__` dunder method to specify what happens when you leave the context (my UoW calls its `rollback` function to discard uncommited changes).
 
-I felt a bit dirty about my Repository as class attributes shared across all past, present and future instantiations of a class as a means of persisting data felt a bit weird -- it's easy to accidentally create an instance and shadow or overwrite the class variable. This wasn't helped by internet searches wherein I found of conflicting examples of writing a Repository and UoW. I became a little frustrated with trying to do "the right thing" first time, which caused some procrastination.
+I felt a bit dirty about my Repository, as class attributes shared across all past, present and future instantiations of a class as a means of persisting data felt a bit weird -- it's easy to accidentally create an instance and shadow or overwrite the class variable. This wasn't helped by internet searches wherein I found of conflicting examples of writing a Repository and UoW. I became a little frustrated with trying to do "the right thing" first time, which caused some procrastination.
 
-Persevering, I took the example from the Cosmic Python book much further. I gave the Repository an instance variable dictionary called `_staged_objects` to keep track of objects that needed to be committed. I felt like I was really in the swing of things now. I added a class `_object_versions` and instance `_staged_versions` dictionary too. Imagine updating a user's holdings, my Repository and UoW worked like so:
+Persevering, I took the example from the Cosmic Python book much further. I gave the Repository an instance variable dictionary called `_staged_objects` to keep track of objects that needed to be committed. I felt like I was really in the swing of things now. I added an `_object_versions` class dict, and `_staged_versions` instance dict too. If you were to imagine a process to update a user's holdings, my Repository and UoW worked like so:
 
 * A change in the system such as a bought or sold stock triggers a call to the `Exchange`'s `update_user` service function
-* The `Exchange` service `update_user` method "enters" a context (using Python's `with` statement), instantiating a `UoW` that has access to the Repository for handling the users, a variable `uow` is in scope for dealing with the unit of work and is the only way to access the user Repository
-* The service fetches uses the context of the UoW and queries the user repository with `uow.users.get`
+* The `Exchange` service `update_user` method "enters" a context (using Python's `with` statement), instantiating a `UoW` that has access to the Repository for handling the users. A variable `uow` is in scope for dealing with the unit of work **and is the only way** to access the user Repository
+* `update_user` uses the context of the UoW and queries the user repository with `uow.users.get`
 * The Repository's `get` checks for the user object in its `_objects` **class** dictionary, copies (`copy.deepcopy`) it to its `_staged_objects` **instance** dictionary (and also copies the `_object_version[user_id]` to `_staged_version[user_id]`) and returns the staged object
 * The `update_user` method makes a change to the domain object and calls `uow.commit`
 * The UoW passes through the request to commit to the Repository:
@@ -29,15 +29,12 @@ Persevering, I took the example from the Cosmic Python book much further. I gave
     * The `_staged_objects[user_id]` overwrites the `_objects[user_id]` and `_object_version[user_id]` is incremented
 * `update_user` exits the `with` block, closing the UoW context (calling `uow.rollback` automatically, but there is nothing to rollback)
 
-It took some refining but it did indeed work! I changed the `add_users` and `add_stocks` functions on the `Exchange` (called from `main.py`) to set up a UoW, stage the new objects and commit them to storage. Similarly the application could check a user or transaction ID by setting up a UoW and querying the Repository.
+It took some refining but it did indeed work! When the `uow` is instantiated by a service, it creates a new `GenericMemoryRepository` and specifies a prefix to be added to all the keys (for the `_objects` dict and so on), meaning the the `GenericMemoryRepository` can be used by any model in our domain (`Stocks` and `Users`) without worrying about key clases. These functions are all overkill as we'll likely migrate to some other means to persist storage, but it was important for me to see how a Repostory and UoW would work, even if just to abstract a Python list out of `main.py` or the `Exchange` class to an interface.
 
-I want to note that unlike the Cosmic Python book, I kept the Repository and UoW definitions next to each-other. As collaborating objects they are very tightly coupled, indeed the relationship between a Repository and a UoW in my experience so far seems to be a direct 1:1 mapping. So it seemed only natural they should live close together given they'll likely change together.
+While this worked, it felt like a lot of effort to manage a dictionary.
 
 
 
-To quote an earlier commit message:
-
-> Feels like a lot of effort to manage a dictionary but I trust we'll get payoff in the future...
 
 
 The main thing that sticks from the three books I have read so far is the principle of inverting dependencies.
