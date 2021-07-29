@@ -3,9 +3,15 @@
 ## Trying out the Repository and the Unit of Work collaboration pattern
 **2021-07-29 / exchange,server,python / Sam**
 
-*Clean Architecture* talked a little about how a framework is merely a development detail. I found this quite confusing and unhelpful. As someone who has spent a year working on a "Django application" I couldn't see how I was supposed to engineer applications without being beholden to my framework.
-The reason I actually bought *Architecture Patterns with Python* was its appendix showing how you might integrate your system into Django.
+*Clean Architecture* talked a little about how a framework is merely a development detail and should be deferred just like any other detail in your system. On first reading I found this quite confusing and unhelpful. I understood the sentiment, but as someone who has just spent the pandemic year working on a "Django application", I couldn't see how one could possibly engineer applications and use a framwork without making a decision early in the process, and conforming to that framework.
+
+The reason I bought *Architecture Patterns with Python* was for its [appendix showing how you might integrate an applocation into Django](https://www.cosmicpython.com/book/appendix_django.html). This was particularly helpful as Django is the only tool I've used to build large service-like applications, so I could see the boundaries of the example application and Django's responsibilities in much clearer terms.
+
 *Architecture Patterns with Python* also introduced me to the **Repository** and closely related **Unit of Work** patterns.
+I won't go into detail here (because every person and their dog seems to have their own personal interpretation of each pattern), but my understanding seemed to be:
+* A **Repository** offers an interface for an application manipulate a collection of objects (eg. add, get) while hiding how and where the data is stored, effectively keeping your application ignorant of how data is persisted (eg. in memory, a database, a file)
+* A **Unit of Work** (UOW) offers a context in which objects that have changed are noted, and those changes can be persisted (or discarded) as part of a transaction in your application
+
 
 Still, what's the point in all these lovely frameworks if you're going to write a bunch of code to keep them at bay?
 
