@@ -13,22 +13,25 @@ I won't go into detail here (because every person and their dog seems to have th
 * A **Repository** offers an interface for an application manipulate a collection of objects (eg. add, get) while hiding how and where the data is stored, effectively keeping your application ignorant of how data is persisted (eg. in memory, a database, a file)
 * A **Unit of Work** (UoW) offers a context in which objects that have changed are noted, and those changes can be persisted (or discarded) as part of a transaction in your application
 
-Since my last update I had added the concept of a `Client` (user) which worked similarly to `Stocks` (make a list of them and stuff it into the `Exchange`), and wanted to see how access to the Clients and Stocks could be provided by a Repository (before attacking anything more complex like the `OrderBook`). Before that, I had to [pull apart my single script](https://github.com/SAMTOMINDUSTRYS/stex2s-python/commit/acf1031b25313478074ad7899b8a7eeef5eefdb7) and set a layout to help organise the real ARCHITECTURE that was about to happen. I settled on the following top-level modules:
+I set about building a Repository and UoW to hold `Clients` and `Stocks` in volatile memory, just like in my first program but instead of interacting with a Python data structure directly, the application would have to interact with the Repository. I based my first Repository and UoW on the mock testing repo from the Cosmic Python book, but with a little extra flair; rather than merely mocking a Repository and holding a temporary list, I defined a class which held a dictionary named `_objects` as a class attribute, such that any instantiation of the Repository would be able to interact with the `_objects` stored inside. As suggested by the book, I made the UoW a Python context manager. A context manager requires an `__enter__` dunder method to setup some context (my UoW just returns itself) and an `__exit__` dunder method to specify what happens when you leave the context (my UoW calls its `rollback` function to discard uncommited changes).
 
-* `domain` -- a sacred realm for storing domain entities and very little else (this is the centre of the Clean Architecture diagram, it should not depend on anything outside of itself), I left all the dataclasses in here with the exception of the `Exchange` class
-* `entrypoints` -- the welcome mat of the application, I moved all the object instantiation and example code here to `main.py`
-* `services` -- a placeholder for utilities that offer the application ways to do things, effectively a routing layer to cause the entrypoints to make something happen. This is the new home of the `Exchange` class, but eventually much more will be moved here
-* `io` -- I didn't like the suggestion of using the `services` module to house Repositories and UoWs as found in the Cosmic Python examples as they didn't seem to fit my personal interpretation of a service, so I created an `io` module to organise "input and output things". I imagine message parsing and file handling will all live in here too
-* `adapters` -- following the "Ports and Adapters" ethos, this code is responsible for plugging frameworks, ORMs and other such external matters into the application
+I felt a bit dirty about my Repository as class attributes shared across all past, present and future instantiations of a class as a means of persisting data felt a bit weird -- it's easy to accidentally create an instance and shadow or overwrite the class variable. This wasn't helped by internet searches wherein I found of conflicting examples of writing a Repository and UoW. I became a little frustrated with trying to do "the right thing" first time, which caused some procrastination.
 
-The most interesting thing about this exercise was that I quite quickly realised the `Exchange` domain entity was in fact a service layer. The `Exchange` offers exchange-related functionality to the `main.py` application entrypoint. If nothing else, merely thinking about what a cleaner architecture looks like in your project tree will encourage better domain abstractions and make the responsibilities of intra-application services more obvious.
+Persevering, I took the example from the Cosmic Python book much further. I gave the Repository an instance variable dictionary called `_staged_objects` to keep track of objects that needed to be committed. I felt like I was really in the swing of things now. I added a class `_object_versions` and instance `_staged_versions` dictionary too. Imagine updating a user's holdings, my Repository and UoW worked like so:
 
-I set about building a Repository and UoW to hold `Clients` and `Stocks` in volatile memory, just like in my first program but instead of interacting with a Python data structure directly, the application would have to interact with the Repository. I based my first Repository and UoW on the in-memory testing repo from the Cosmic Python book, but with a little extra flair; rather than merely mocking a Repository and holding a temporary list, I defined a class which held a dictionary as a class attribute, such that any instantiation of the Repository would be able to interact with the objects stored inside.
-
-I felt a bit dirty about this as class attributes shared across all past, present and future instantiations of a class felt a bit weird. This wasn't helped by internet searches wherein I found of conflicting examples of writing a Repository and UoW, and I became a little frustrated with trying to do "the right thing" first time, which caused some procrastination.
+* A change in the system such as a bought or sold stock triggers a call to the `Exchange`'s `update_user` service function
+* The `Exchange` service `update_user` method "enters" a context (using Python's `with` statement), instantiating a `UoW` that has access to the Repository for handling the users, a variable `uow` is in scope for dealing with the unit of work and is the only way to access the user Repository
+* The service fetches uses the context of the UoW and queries the user repository with `uow.users.get`
+* The Repository's `get` checks for the user object in its `_objects` **class** dictionary, copies (`copy.deepcopy`) it to its `_staged_objects` **instance** dictionary (and also copies the `_object_version[user_id]` to `_staged_version[user_id]`) and returns the staged object
+* The `update_user` method makes a change to the domain object and calls `uow.commit`
+* The UoW passes through the request to commit to the Repository:
+    * The `_staged_version[user_id]` is checked against `_object_version[user_id]` to ensure the `_objects` dictionary has not been updated for this user since `get` was called
+    * The `_staged_objects[user_id]` overwrites the `_objects[user_id]` and `_object_version[user_id]` is incremented
+* `update_user` exits the `with` block, closing the UoW context (calling `uow.rollback` automatically, but there is nothing to rollback)
 
 It took some refining but it did indeed work! I changed the `add_users` and `add_stocks` functions on the `Exchange` (called from `main.py`) to set up a UoW, stage the new objects and commit them to storage. Similarly the application could check a user or transaction ID by setting up a UoW and querying the Repository.
 
+I want to note that unlike the Cosmic Python book, I kept the Repository and UoW definitions next to each-other. As collaborating objects they are very tightly coupled, indeed the relationship between a Repository and a UoW in my experience so far seems to be a direct 1:1 mapping. So it seemed only natural they should live close together given they'll likely change together.
 
 
 
@@ -45,6 +48,18 @@ I've learned two things this week:
 
 The main point of this is to do things properly rather than quickly! I haven't made visible progress in terms of features this week, but the storage of Stocks, Users and Orders has been abstracted and we can move it around to anything we like with a bit of grunt code.
 
+## Organising for Architecture
+**2021-07-29 / exchange,server,python / Sam**
+
+Since my last update I had added the concept of a `Client` (user) which worked similarly to `Stocks` (make a list of them and stuff it into the `Exchange`), and wanted to see how access to the Clients and Stocks could be provided by a Repository (before attacking anything more complex like the `OrderBook`). Before that, I had to [pull apart my single script](https://github.com/SAMTOMINDUSTRYS/stex2s-python/commit/acf1031b25313478074ad7899b8a7eeef5eefdb7) and set a layout to help organise the real ARCHITECTURE that was about to happen. I settled on the following top-level modules:
+
+* `domain` -- a sacred realm for storing domain entities and very little else (this is the centre of the Clean Architecture diagram, it should not depend on anything outside of itself), I left all the dataclasses in here with the exception of the `Exchange` class
+* `entrypoints` -- the welcome mat of the application, I moved all the object instantiation and example code here to `main.py`
+* `services` -- a placeholder for utilities that offer the application ways to do things, effectively a routing layer to cause the entrypoints to make something happen. This is the new home of the `Exchange` class, but eventually much more will be moved here
+* `io` -- I didn't like the suggestion of using the `services` module to house Repositories and UoWs as found in the Cosmic Python examples as they didn't seem to fit my personal interpretation of a service, so I created an `io` module to organise "input and output things". I imagine message parsing and file handling will all live in here too
+* `adapters` -- following the "Ports and Adapters" ethos, this code is responsible for plugging frameworks, ORMs and other such external matters into the application
+
+The most interesting thing about this exercise was that I quite quickly realised the `Exchange` domain entity was in fact a service layer. The `Exchange` offers exchange-related functionality to the `main.py` application entrypoint. If nothing else, merely thinking about what a cleaner architecture looks like in your project tree will encourage better domain abstractions and make the responsibilities of intra-application services more obvious.
 
 ## Sound the opening foghorn
 **2021-07-29 / exchange,server,python / Sam**
