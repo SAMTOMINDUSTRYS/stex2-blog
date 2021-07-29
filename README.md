@@ -1,5 +1,10 @@
 # stex2-blog
 
+## Trying out the Repository and the Unit of Work collaboration pattern
+**2021-07-29 / exchange,server,python / Sam**
+
+*Architecture Patterns with Python* introduced me to the **Repository** and closely related **Unit of Work** patterns.
+
 ## Sound the opening foghorn
 **2021-07-29 / exchange,server,python / Sam**
 
