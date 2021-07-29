@@ -15,6 +15,8 @@ I've learned two things this week:
 * Until now, I have failed to harness the real power of object orientated programming, instead writing procedural programs that happened to have objects
 * Less code is not clean code, indeed more code seems to be the recipe to adaptable systems
 
+The main point of this is to do things properly rather than quickly! I haven't made visible progress in terms of features this week, but the storage of Stocks, Users and Orders has been abstracted and we can move it around to anything we like with a bit of grunt code.
+
 
 ## Sound the opening foghorn
 **2021-07-29 / exchange,server,python / Sam**
