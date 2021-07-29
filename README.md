@@ -1,5 +1,10 @@
 # stex2-blog
 
+## First thoughts on stex2s-py
+**2021-07-29 / exchange,server,python / Sam**
+
+Hoot hoot
+
 ## Welcome
 **2021-07-29 / misc / Sam**
 
