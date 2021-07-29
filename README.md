@@ -33,7 +33,7 @@ I implemented a [basic procedural Python program](https://github.com/SAMTOMINDUS
     * The buy can be exactly fulfilled by the sell (volumes match)
     * The best sell has less volume than needed for the buy (keep iterating through the best sells under there is enough volume), unless...
     * ...the buy volume cannot be reached and the buy is not fulfilled
-* The `OrderBook` additionally handled the responsibility of keeping the buy and sell orders sorted appropriately for the price-time priority matcher to work (highest buys are matched to lowest sells, ensuring that older orders are served first)
+* The `OrderBook` additionally handled the responsibility of keeping the buy and sell orders sorted appropriately for the price-time priority matcher to work (highest buys are matched to lowest sells, additionally ensuring that older orders are served first)
 * The body of the program allowed me to initialise an `Exchange`, list some `Stock` and then send messages to append buys and sell `Orders` to the correct `MarketStall`'s `OrderBook`, returning any viable `Trades` conducted as a result of the new order
 
 I had always thought of a stock exchange as a magic mystery box, but the rules that drive basic trade are quite simple. Of course, a real exchange handles a lot more complexity than what is implemented here - the LSE documents describe a whole host of order types, rules and auction types that we'll have to wrap our heads around later - but I was really surprised at how easy it was to get this working. Clearly, the hard work isn't going to be on the business logic side, but writing code that'll stand up to tens of thousands of orders a second, in a reliable way. This is going to be fun.
