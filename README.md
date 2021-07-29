@@ -1,17 +1,26 @@
 # stex2-blog
 
-## Trying out the Repository and the Unit of Work collaboration pattern
+## Trying out some Architecture: Repository and the Unit of Work collaborators
 **2021-07-29 / exchange,server,python / Sam**
 
 *Clean Architecture* talked a little about how a framework is merely a development detail and should be deferred just like any other detail in your system. On first reading I found this quite confusing and unhelpful. I understood the sentiment, but as someone who has just spent the pandemic year working on a "Django application", I couldn't see how one could possibly engineer applications and use a framwork without making a decision early in the process, and conforming to that framework.
 
-The reason I bought *Architecture Patterns with Python* was for its [appendix showing how you might integrate an applocation into Django](https://www.cosmicpython.com/book/appendix_django.html). This was particularly helpful as Django is the only tool I've used to build large service-like applications, so I could see the boundaries of the example application and Django's responsibilities in much clearer terms. Seeing is believing and here was proof that a framework really can live on the "outside" of your application. Still, this begged the question: what's the point in all these lovely frameworks if you're going to write a bunch of code to keep them at bay?
+The reason I bought *Architecture Patterns with Python* ("Cosmic Python") was for its [appendix showing how you might integrate an applocation into Django](https://www.cosmicpython.com/book/appendix_django.html). This was particularly helpful as Django is the only tool I've used to build large service-like applications, so I could see the boundaries of the example application and Django's responsibilities in much clearer terms. Seeing is believing and here was proof that a framework really can live on the "outside" of your application. Still, this begged the question: what's the point in all these lovely frameworks if you're going to write a bunch of code to keep them at bay?
 
 *Architecture Patterns with Python* also introduced me to the **Repository** and closely related **Unit of Work** patterns.
 I won't go into detail here (because every person and their dog seems to have their own personal interpretation of each pattern), but my brief interpretation at this time is:
 
 * A **Repository** offers an interface for an application manipulate a collection of objects (eg. add, get) while hiding how and where the data is stored, effectively keeping your application ignorant of how data is persisted (eg. in memory, a database, a file)
-* A **Unit of Work** (UOW) offers a context in which objects that have changed are noted, and those changes can be persisted (or discarded) as part of a transaction in your application
+* A **Unit of Work** (UoW) offers a context in which objects that have changed are noted, and those changes can be persisted (or discarded) as part of a transaction in your application
+
+Since my last update I had added the concept of a `Client` (user) which worked similarly to `Stocks` (make a list of them and stuff it into the `Exchange`), and wanted to see how access to the Clients and Stocks could be provided by a Repository (before attacking anything more complex like the `OrderBook`). Before that, I had to [pull apart my single script](https://github.com/SAMTOMINDUSTRYS/stex2s-python/commit/acf1031b25313478074ad7899b8a7eeef5eefdb7) and set a layout to help organise the real ARCHITECTURE that was about to happen. I settled one a few modules:
+
+* `domain` -- a sacred realm for storing domain entities and very little else (this is the centre of the Clean Architecture diagram, it should not depend on anything outside of itself), I left all the dataclasses in here with the exception of the `Exchange` class
+* `entrypoints` -- the welcome mat of the application, new home of the `Exchange` class
+* `services` -- a placeholder for utilities that will offer the application ways to do things
+* `io` -- I didn't like the suggestion of using the `services` module to house Repositories and UoWs as found in the Cosmic Python examples as they didn't seem to fit my personal interpretation of a service, so I created an `io` module to organise "input and output things". I imagine message parsing and file handling will all live in here too
+
+I figured it would be easiest to abstract how the `Stocks` are stored first as they aren't touched very often. There are plenty of (sometimes conflicting) examples of writing a Repository and UoW, and I became a little frustrated with trying to do "the right thing" first time.
 
 
 
