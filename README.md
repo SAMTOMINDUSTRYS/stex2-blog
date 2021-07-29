@@ -7,6 +7,14 @@
 The reason I actually bought *Architecture Patterns with Python* was its appendix showing how you might integrate your system into Django.
 *Architecture Patterns with Python* also introduced me to the **Repository** and closely related **Unit of Work** patterns.
 
+Still, what's the point in all these lovely frameworks if you're going to write a bunch of code to keep them at bay?
+
+The main thing that sticks from the three books I have read so far is the principle of inverting dependencies.
+
+I've learned two things this week:
+* Until now, I have failed to harness the real power of object orientated programming, instead writing procedural programs that happened to have objects
+* Less code is not clean code, indeed more code seems to be the recipe to adaptable systems
+
 
 ## Sound the opening foghorn
 **2021-07-29 / exchange,server,python / Sam**
