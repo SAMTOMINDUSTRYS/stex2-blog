@@ -33,7 +33,13 @@ It took some refining but it did indeed work! When the `uow` is instantiated by 
 
 While this worked, it felt like a lot of effort to manage a dictionary, and I could certainly see the appeal of using a framework that takes all this work off you instead. I decided the way to test whether this was a worthwhile endeavour was to immediately write a new Repository and UoW to access an `sqlite` database and see how badly the `Exchange` was impacted.
 
+Half a day or so later, I'd [made some changes](https://github.com/SAMTOMINDUSTRYS/stex2s-python/commit/1088a8d9a51632cd4cc39acc40acf57ce83790d5):
 
+* `adapters/stex_sqlite.py` defines the `SQLAlchemy` boiler plate to set-up a database table and "map" it to the domain object (to allow the ORM to commit domain objects and return domain objects from queries without writing any code)
+* The `stex_sqlite` adapter also provides `StexSqliteSessionFactory` which is used to create `SQLAlchemy` sessions, it is also controls the instantiation of a Singleton `_engine` that represents the database and is required for session making. I'm not sure it belongs here at the moment...
+* In my `io/persistence.py`, a `StockSqliteRepository` and `StockSqliteUoW` implement the required functions to add/get and commit/rollback (respectively), using the `SQLAlchemy` session
+
+What about for the service? I was pretty stunned to discover the pattern really does work! All I needed to change was the `StockMemoryUoW` to `StockSqliteUoW`!
 
 
 
