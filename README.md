@@ -1,9 +1,5 @@
 # stex2-blog
 
-## 2021-07-29 / stexs-py / Sam
-* Hello
-
-```python
-def meow():
-    pass
-```
+## Welcome
+**2021-07-29 / Misc / Sam**
+Tom and I thought it would be good to kick off a development log. We'll see if that turns out to be true.
