@@ -8,7 +8,8 @@
 The reason I bought *Architecture Patterns with Python* was for its [appendix showing how you might integrate an applocation into Django](https://www.cosmicpython.com/book/appendix_django.html). This was particularly helpful as Django is the only tool I've used to build large service-like applications, so I could see the boundaries of the example application and Django's responsibilities in much clearer terms. Seeing is believing and here was proof that a framework really can live on the "outside" of your application. Still, this begged the question: what's the point in all these lovely frameworks if you're going to write a bunch of code to keep them at bay?
 
 *Architecture Patterns with Python* also introduced me to the **Repository** and closely related **Unit of Work** patterns.
-I won't go into detail here (because every person and their dog seems to have their own personal interpretation of each pattern), but my understanding seemed to be:
+I won't go into detail here (because every person and their dog seems to have their own personal interpretation of each pattern), but my brief interpretation at this time is:
+
 * A **Repository** offers an interface for an application manipulate a collection of objects (eg. add, get) while hiding how and where the data is stored, effectively keeping your application ignorant of how data is persisted (eg. in memory, a database, a file)
 * A **Unit of Work** (UOW) offers a context in which objects that have changed are noted, and those changes can be persisted (or discarded) as part of a transaction in your application
 
