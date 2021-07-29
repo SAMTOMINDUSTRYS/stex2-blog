@@ -41,7 +41,9 @@ Half a day or so later, I'd [made some changes](https://github.com/SAMTOMINDUSTR
 
 What about for the service? I was pretty stunned to discover the pattern really does work! All I needed to change was the `StockMemoryUoW` to `StockSqliteUoW`!
 
+Suddenly a few things clicked for me. We can take advantage of the benefits of incredible software like `SQLAlchemy`, but we don't have to let it in to the inner-circle of our application. In this case, the Repository (and UoW) allows us to take advantage of the bits of `SQLAlchemy` that we want, without letting our application in on the secret. Indeed, as far as the `Exchange` was concerned, the objects could still be in a class attribute in our `GenericMemoryRepository`. Incredibly, I could pick one or the other at start-up and the application just worked either way.
 
+This might seem like a long post to say "hey design patterns are pretty good you know", but it's more than that to me. Throughout my programming career so far, I'd always thought "less code is clean code". I don't see interfaces so much in Python code (compared to say, Java), and abstractions about storage and the like are quite an enterprise pattern compared to scientific coding. All this boilerplate to hold `SQLAlchemy` (or indeed, a simple Python dict) at arms length is completely contrary to how I've worked in the past, and yet, the STEX2 server could swap to another ORM or persistence layer 
 
 The main thing that sticks from the three books I have read so far is the principle of inverting dependencies.
 It was a bit alien to have this memory just floating around in a class so far from the entrypoint of the application.
@@ -49,7 +51,6 @@ I've learned two things this week:
 * Until now, I have failed to harness the real power of object orientated programming, instead writing procedural programs that happened to have objects
 * Less code is not clean code, indeed more code seems to be the recipe to adaptable systems
 
-The main point of this is to do things properly rather than quickly! I haven't made visible progress in terms of features this week, but the storage of Stocks, Users and Orders has been abstracted and we can move it around to anything we like with a bit of grunt code.
 
 ## Organising for Architecture
 **2021-07-29 / exchange,server,python / Sam**
