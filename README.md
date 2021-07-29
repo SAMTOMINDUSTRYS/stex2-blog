@@ -26,16 +26,17 @@ After a bit of Googling and refining my terminology, I found the question I was 
 I implemented a [basic procedural Python program](https://github.com/SAMTOMINDUSTRYS/stex2s-python/commit/c0dbebfd9138e85c89fb623ad16dc029a7ad86d3) to play with order matching. I won't walkthrough it here, but to highlight:
 
 * I used `dataclass` for the first time, skipping a bunch of boring boilerplate Python for classes that hold entities
-* The entrypoint for the system was the `Exchange`, which held a map of `MarketStalls` (a place to sell a particular stock symbol)
-* Each `MarketStall` had an `OrderBook`, which maintained its own list of buy and sell `Orders`, as well as implementing the matching algorithm
+* The entrypoint for the system was the `Exchange`, which held a map (`dict`) of stock symbols to instantiated `MarketStalls` (a place to sell a particular stock symbol)
+* Each `MarketStall` had an `OrderBook`, which instantiated its own `list` of buy and sell `Orders`, as well as implementing the matching algorithm
 * [My first implementation of Priority-Time matching](https://github.com/SAMTOMINDUSTRYS/stex2s-python/blob/c0dbebfd9138e85c89fb623ad16dc029a7ad86d3/stexs-py/stexs.py#L92-L147) handled all four cases of basic buy fulfillment:
     * The best sell has more volume than needed for the buy (so the remaining volume is split into a new open order)
     * The buy can be exactly fulfilled by the sell (volumes match)
     * The best sell has less volume than needed for the buy (keep iterating through the best sells under there is enough volume), unless...
     * ...the buy volume cannot be reached and the buy is not fulfilled
+* The `OrderBook` additionally handled the responsibility of keeping the buy and sell orders sorted appropriately for the price-time priority matcher to work (highest buys are matched to lowest sells, ensuring that older orders are served first)
 * The body of the program allowed me to initialise an `Exchange`, list some `Stock` and then send messages to append buys and sell `Orders` to the correct `MarketStall`'s `OrderBook`, returning any viable `Trades` conducted as a result of the new order
 
-I had always thought of a stock exchange as a magic mystery box, but the rules that drive basic trade are quite simple. Of course, a real exchange handles a lot more complexity than what is implemented here - the LSE documents describe a whole host of order types, rules and auction types that we'll have to wrap our heads around later - but I was really surprised at how easy it was to get this working. Clearly, the hard work isn't on the business logic, but writing code that'll stand up to tens of thousands of orders a second, in a reliable way.
+I had always thought of a stock exchange as a magic mystery box, but the rules that drive basic trade are quite simple. Of course, a real exchange handles a lot more complexity than what is implemented here - the LSE documents describe a whole host of order types, rules and auction types that we'll have to wrap our heads around later - but I was really surprised at how easy it was to get this working. Clearly, the hard work isn't going to be on the business logic side, but writing code that'll stand up to tens of thousands of orders a second, in a reliable way. This is going to be fun.
 
 
 ## Welcome
@@ -46,6 +47,6 @@ Content with recently [solving bioinformatics](https://genomebiology.biomedcentr
 In a rare week off a few months ago, I felt inspired to adventure on some personal improvement and bought a bunch of books.
 I've been eager to apply the things I have been reading about from *Clean Architecture*, *Architecture Patterns with Python* (aka. "Cosmic Python") and most recently, the "big boy"; *Designing Data-Intensive Applications*.
 
-Turns out our five year old idea for establishing the *Sam and Tom Stock Exchange* seemed a good fit. It was likely going to need some real domain modelling and research (because neither of us are users of such a system and not at all familiar with finance technology) and it would likely lend well to a service-orientated architecture, which is something I would like to try out. Most interestingly, by definition a stock exchange is a data intensive system, and would throw up some challenges for ensuring transactions are robust, services can scale, and are resilient to whatever we decide to throw at it.
+Turns out our five year old idea for establishing the *Sam and Tom Stock Exchange* seemed a good fit. We're likely going to need some real domain modelling and research (because neither of us are users of such a system and not at all familiar with finance technology) and we think the idea will lend well to a service-orientated architecture, which is something I would like to try out. Most interestingly, by definition a stock exchange is a data intensive system, and will throw up some challenges for ensuring transactions are robust, services can scale, and are resilient to whatever we decide to throw at it.
 
 Tom and I thought it would be good to kick off a development log. We'll see if that turns out to be true.
