@@ -43,13 +43,7 @@ What about for the service? I was pretty stunned to discover the pattern really 
 
 Suddenly a few things clicked for me. We can take advantage of the benefits of incredible software like `SQLAlchemy`, but we don't have to let it in to the inner-circle of our application. In this case, the Repository (and UoW) allows us to take advantage of the bits of `SQLAlchemy` that we want, without letting our application in on the secret. Indeed, as far as the `Exchange` was concerned, the objects could still be in a class attribute in our `GenericMemoryRepository`. Incredibly, I could pick one or the other at start-up and the application just worked either way.
 
-This might seem like a long post to say "hey design patterns are pretty good you know", but it's more than that to me. Throughout my programming career so far, I'd always thought "less code is clean code". I don't see interfaces so much in Python code (compared to say, Java), and abstractions about storage and the like are quite an enterprise pattern compared to scientific coding. All this boilerplate to hold `SQLAlchemy` (or indeed, a simple Python dict) at arms length is completely contrary to how I've worked in the past, and yet, the STEX2 server could swap to another ORM or persistence layer 
-
-The main thing that sticks from the three books I have read so far is the principle of inverting dependencies.
-It was a bit alien to have this memory just floating around in a class so far from the entrypoint of the application.
-I've learned two things this week:
-* Until now, I have failed to harness the real power of object orientated programming, instead writing procedural programs that happened to have objects
-* Less code is not clean code, indeed more code seems to be the recipe to adaptable systems
+This might seem like a long post to say "hey design patterns are pretty good you know", but it's a little more than that to me. Throughout my programming career so far, I'd always thought "less code is clean code". I don't see interfaces so much in Python code (compared to say, Java), and abstractions about storage and the like are quite "enterprise-y" and rarely seen in scientific programming paradigms. All this boilerplate to hold `SQLAlchemy` (or indeed, a simple Python dict) at arms length is completely contrary to how I've worked in the past, and yet, the STEX2 server could swap to another ORM or persistence layer tomorrow with nothing more than a bit of grunt work to set up an appropriate Repository, and the application is none the wiser. It seems that more code, not less code, is the recipe to an adaptable system.
 
 
 ## Organising for Architecture
@@ -64,6 +58,7 @@ Since my last update I had added the concept of a `Client` (user) which worked s
 * `adapters` -- following the "Ports and Adapters" ethos, this code is responsible for plugging frameworks, ORMs and other such external matters into the application
 
 The most interesting thing about this exercise was that I quite quickly realised the `Exchange` domain entity was in fact a service layer. The `Exchange` offers exchange-related functionality to the `main.py` application entrypoint. If nothing else, merely thinking about what a cleaner architecture looks like in your project tree will encourage better domain abstractions and make the responsibilities of intra-application services more obvious.
+
 
 ## Sound the opening foghorn
 **2021-07-29 / exchange,server,python / Sam**
