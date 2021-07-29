@@ -3,7 +3,8 @@
 ## First thoughts on stex2s-py
 **2021-07-29 / exchange,server,python / Sam**
 
-Hoot hoot
+Feeling only slightly guilty, I made a start on `stex2` without Tom last week. Having spent a bit of time chatting about the possibilities with Tom the week before, I was curious as to how a stock exchange actually works in the first place. What actually happens on an exchange? Annoyingly, most literature on the topic is aimed at non-technical prospective day-traders; focussing more on the terminology and market tips.
+
 
 ## Welcome
 **2021-07-29 / misc / Sam**
