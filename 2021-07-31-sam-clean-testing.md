@@ -1,0 +1,11 @@
+## Refactoring, cleaning and testing
+**2021-07-31 / exchange,server,python / Sam**
+
+Quick update on development so far this weekend. Tom and I had a brief discussion about user stories and decided to try and cook up a few documents to keep track of our terminology (which way around are bid and ask again?), our assumptions (there is only one exchange, all prices are in the same currency and other such simplifications we have decided upon) and the interchange formats our competing applications will need to speak in order to be swappable. We'll put these on Github somewhere, eventually.
+
+We decided that the user-related functionality that I'd developed in the Python version of the exchange should probably live outside the Exchange itself and in another system. We've decided to call this new service the `Broker`. In the STEX ecosystem, we're going to assume there is just one broker (for now), but we certainly envisage running multiple competing broker services with their own backstory and perks for clients to play with when the Exchange is actually working.
+
+My goals for the weekend were to tidy up my services a little, and write some tests. I've spent around an hour today abstracting out the user functionality from my `services/exchange.py` to a new `services/broker.py` module. I've designed it to be quite lightweight as we aren't actively developing the broker systems while we get the exchange itself working, but it works just enough that the functionality I built previously (to track user account balances and holdings) still works. This refactoring was surprisingly straightforward, because the storage concerns have been abstracted to the Repositories and can only be accessed through a Unit of Work (UoW). All I needed to do was move the functions from the exchange to the new broker module, and ensure the new Broker class had a reference to the right UoW. The application is ignorant to persistence concerns, which means we can quite easily move the responsibility for data structures around! It's been very nice to see the "hard" work of writing more code paying off.
+
+* User related functions have been abstracted to a new `services/broker.py` module
+* The `Broker` now acts as a gateway for checking transactions against a user's portfolio
