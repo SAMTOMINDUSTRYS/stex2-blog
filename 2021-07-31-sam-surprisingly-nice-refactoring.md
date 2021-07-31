@@ -1,4 +1,4 @@
-## Refactoring, cleaning and testing
+## A surprisingly nice weekend of refactoring, cleaning and testing
 **2021-07-31 / exchange,server,python / Sam**
 
 Quick update on development so far this weekend. Tom and I had a brief discussion about user stories and decided to try and cook up a few documents to keep track of our terminology (which way around are bid and ask again?), our assumptions (there is only one exchange, all prices are in the same currency and other such simplifications we have decided upon) and the interchange formats our competing applications will need to speak in order to be swappable. We'll put these on Github somewhere, eventually.
