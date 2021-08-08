@@ -49,12 +49,16 @@ Of course, we've also picked a project for which neither of us have any experien
 On reflection today, despite getting some of the basics a little backward here and there, I think we've done a good job at muddling through the problem at hand and made good progress in a short time.
 My aim now is to rapidly iterate towards a first version of an exchange that can send and receive messages to list buys, sells; execute trades based on price-time priority and provide quotations.
 Once I have a working first version, I will have an end-to-end platform that can be tested against real-world expectations.
-I'm trying to be aware of any assumptions I am making, and to defer hard decisions about how important things should work until later.
-I think Tom is having trouble deferring some decisions and seems to be intent on designing things very well on the first try, whereas I'm expecting to throw bits of my system away and rewrite them with the benefit of hindsight.
-I'm hoping that the design of my application will lend itself to easy heavy refactoring and swapping components, but we'll see whether Tom's tortoise approach beats my minimal effort hare in the long run.
 
-In the mean-time as I'm so close now, I have abandoned all good practice and am racing towards a minimal viable version.
+I'm so close now, I have abandoned all good practice and am racing towards a first fully-functioning version.
 I have [added several new message types](https://github.com/SAMTOMINDUSTRYS/stex2s-python/commit/2ab84cdb8e5c06eb0a140d9b157a897135beffe4) such that the exchange can provide a list of stocks and some summary information through a socket.
 More excitingly, I have written a [text driven UI application](https://github.com/SAMTOMINDUSTRYS/stex2s-python/commit/61af13434bf0df755f161586f63f0d4e47ad93df) that uses a socket to connect to the exchange, send randomly generate trades, query the state and render it all with the wonderful [`rich`](https://github.com/willmcgugan/rich) library.
 It looks like this:
 
+![](https://github.com/SAMTOMINDUSTRYS/stex2-blog/blob/8f9d34ce642cb41599542536ee70836c86253ae3/images/Screenshot%20from%202021-08-08%2013-57-22.png)
+
+You might think I'm done, but there's still a lot to polish up here. Currently the sockets are all blocking, I'd like to spin up a thread in the background with a multicast socket for clients to subscribe to market data. I want to work with Tom to define some `protobuf` messages for us both to use for messages that come in and out of our applications. Querying for the order book hits the repository each time, I think it should be periodically pushed to a cache for clients to read. I also want to make a start at breaking out the `Broker` module from the `Exchange` so I can lay it out and test it properly.
+
+In the spirit of best-intention domain development I'm trying to be aware of any assumptions I am making, and to defer hard decisions about how important things should work until later.
+I think Tom is having trouble deferring some decisions and seems to be intent on designing things very well on the first try, whereas I'm expecting to throw bits of my system away and rewrite them with the benefit of hindsight.
+I'm hoping that the design of my application will lend itself to easy heavy refactoring and swapping components later, but we'll see whether Tom's tortoise driven development beats my minimal viable hare in the long run.
