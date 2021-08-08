@@ -55,7 +55,7 @@ I have [added several new message types](https://github.com/SAMTOMINDUSTRYS/stex
 More excitingly, I have written a [text driven UI application](https://github.com/SAMTOMINDUSTRYS/stex2s-python/commit/61af13434bf0df755f161586f63f0d4e47ad93df) that uses a socket to connect to the exchange, send randomly generate trades, query the state and render it all with the wonderful [`rich`](https://github.com/willmcgugan/rich) library.
 It looks like this:
 
-![](images/Screenshot from 2021-08-08 13-57-22.png)
+![](/images/Screenshot from 2021-08-08 13-57-22.png)
 
 You might think I'm done, but there's still a lot to polish up here. Currently the sockets are all blocking, I'd like to spin up a thread in the background with a multicast socket for clients to subscribe to market data. I want to work with Tom to define some `protobuf` messages for us both to use for messages that come in and out of our applications. Querying for the order book hits the repository each time, I think it should be periodically pushed to a cache for clients to read. I also want to make a start at breaking out the `Broker` module from the `Exchange` so I can lay it out and test it properly.
 
