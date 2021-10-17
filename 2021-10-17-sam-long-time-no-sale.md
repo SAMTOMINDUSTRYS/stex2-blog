@@ -4,7 +4,7 @@
 Work has been [pretty busy](https://twitter.com/samstudio8/status/1438834677893287937) and for a variety of other reasons neither Tom or I have had much time for fun and frivolity on the stock exchange.
 I'd meant to write an update in September as I was very pleased to have assembled a test suite with just shy of 95% test coverage of the STEX2 Python Exchange!
 Having always struggled to work out which tests to write I have found that like most things, practice makes perfect.
-Writing tests alongside code (or even before writing code if you're mentally able) is yielding better software. It's forcing me to write smaller functions that do their job well, and abstractions that are simple to mock for tests.
+Writing tests alongside code (or even before writing code if I'm feeling generous) is yielding better software. It's forcing me to write smaller functions that do their job well, and abstractions that are simple to mock for tests.
 More excitingly, these skills are bleeding into my real work already.
 
 My testing epiphany aside, I wanted to generally update our avid reader on the state of play.
