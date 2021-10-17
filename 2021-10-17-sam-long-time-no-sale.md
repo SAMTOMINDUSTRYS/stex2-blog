@@ -21,7 +21,7 @@ Armed with the new T7 document we'll be able to start making these changes but t
 My current implementation of the Exchange has an old class that was being phased out (called the `MarketStall`) which still holds the market reference price (the last traded price) for a given symbol.
 Amusingly, my first version had the orderbook as a member of this `MarketStall` class, but I split it out into its own entity as Tom and I were under the impression the matcher just took orders and returned trades without needing to know any additional state.
 I'm undecided as to whether the standalone matcher's `OrderBook` and the old `MarketStall` should be reunited, or whether the last traded price needs to be given to the matcher to decide execution prices.
-I'm not even sure if the matcher should be decising on the execution price or just proposing order matches to be executed at a price determined by another process later!
+I'm not even sure if the matcher should be deciding on the execution price or just proposing order matches to be executed at a price determined by another process later!
 
 I think my first goal will be to retrofit the correct execution pricing into the existing matcher with as little damage as possible, that will allow my exchange to pass the new T7 test suite for the few cases that only consider limit orders.
 Even if the matcher is not the right place to determine the sale price, it is where it is currently decided, we can always move it later.
