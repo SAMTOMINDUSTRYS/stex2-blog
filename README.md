@@ -2,6 +2,7 @@
 A development blog for stex2 - the second Sam and Tom Stock Exchange - an exchange platform from Sam and Tom that is unmarred by the catastrophic failure of stex1
 
 ## Posts
+* [Sam and Tom realise what a mess they have made](2021-10-17-sam-long-time-no-sale.md) (exchange,python,sad,sam)
 * [Sam races toward a minimal viable product and it looks alright](2021-08-08-sam-racing-toward-a-first-viable-version.md) (exchange,python,sam)
 * [Sam has a surprisingly nice weekend of refactoring, cleaning and testing](2021-07-31-sam-surprisingly-nice-refactoring) (exchange,broker,python,sam)
 * [Tom works himself into a corner by underestimating the problem as usual](2021-07-30-tom-help) (exchange,java,tom)
