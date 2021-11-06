@@ -21,5 +21,4 @@ To my surprise, many of the initial changes have been quite simple and my test c
 However, as I move toward making changes that interact with my early-access broker functionality (eg. pre-screening and freezing order-associated assets) I am encountering uncaught unsupported operand `TypeError` cases that are not picked up by testing (as there are no end-to-end tests using the real broker).
 
 For now, I have hackily swapped the market order `None` price for the current `reference_price` when dealing with the broker system.
-This has the nasty side effect of adding a `reference_price` keyword parameter to many of functions involved in handling new orders, but we can stomach this for now.
-Ultimately, I'm sure we'll want to come back to handling the clearing of transactions in a much more complicated way.
+This has [a few nasty side effects](https://github.com/SAMTOMINDUSTRYS/stex2s-python/issues/3) such as necessitating a `reference_price` keyword parameter on many of functions involved in handling new orders, but we can stomach this debt for now as ultimately we'll want to come back to handling the clearing of transactions in a much more complicated life-like way.
