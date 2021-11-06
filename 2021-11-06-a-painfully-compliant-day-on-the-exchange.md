@@ -3,7 +3,7 @@
 
 I started off today slowly adding the requisite changes to support market orders (orders with no price). Despite my best efforts to avoid making decisions too early, it seems there are quite a few pervasive assumptions that have permeated through the system.
 Assumptions are still mostly controlled by the domain models although some business logic has bled in to my service layers already.
-Technical debt notwithstanding, there were two main technical hurdles getting in the way of handling priceless market orders:
+Technical debt notwithstanding, two decisions I had made were getting in the way of handling priceless market orders:
 
 * I'd rushed ahead in the early days and begun building the "broker" subsystem that will go on to independently handle the balances and stock holdings for each user
 * I'd abandoned development of the `MarketStall` class, which still owns the idea of remembering the `last_price` (or `reference_price` as T7 calls it)
