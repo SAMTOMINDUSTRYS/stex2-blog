@@ -1,7 +1,7 @@
 ## A painfully compliant day on the exchange
 **2021-11-06 / exchange,server,python,sad / Sam**
 
-I've just started slowly adding the requisite changes to support market orders (orders with no price). Despite my best efforts to avoid making decisions too early, it seems there are quite a few pervasive assumptions that have permeated through the system.
+I started off today slowly adding the requisite changes to support market orders (orders with no price). Despite my best efforts to avoid making decisions too early, it seems there are quite a few pervasive assumptions that have permeated through the system.
 Assumptions are still mostly controlled by the domain models although some business logic has bled in to my service layers already.
 Technical debt notwithstanding, there are two main technical hurdles getting in the way of handling priceless market orders:
 
