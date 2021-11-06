@@ -1,4 +1,4 @@
-## Another painful day on the exchange
+## A painfully compliant day on the exchange
 **2021-11-06 / exchange,server,python,sad / Sam**
 
 I've just started slowly adding the requisite changes to support market orders (orders with no price). Despite my best efforts to avoid making decisions too early, it seems there are quite a few pervasive assumptions that have permeated through the system.
