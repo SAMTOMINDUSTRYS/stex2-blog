@@ -2,6 +2,7 @@
 **2021-11-06 / exchange,server,python,sad / Sam**
 
 I started off today slowly adding the requisite changes to support market orders (orders with no price). Despite my best efforts to avoid making decisions too early, it seems there are quite a few pervasive assumptions that have permeated through the system.
+It sounds obvious in retrospect but I've discovered the hard way that you can spend a lot of time and effort keeping your software as malleable and flexible as possible but if you get the domain wrong in the first place, you're in for a bad time.
 Assumptions are still mostly controlled by the domain models although some business logic has bled in to my service layers already.
 Technical debt notwithstanding, two decisions I had made were getting in the way of handling priceless market orders:
 
