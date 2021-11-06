@@ -20,4 +20,6 @@ The inertia for these changes has been quite high and really drained some of the
 To my surprise, many of the initial changes have been quite simple and my test coverage provides good confidence that things are indeed working.
 However, as I move toward making changes that interact with my early-access broker functionality (eg. pre-screening and freezing order-associated assets) I am encountering uncaught unsupported operand `TypeError` cases that are not picked up by testing (as there are no end-to-end tests using the real broker).
 
-My plan is to hackily swap the market order `None` price for the current `reference_price` (for now) as I'm sure we'll want to come back to handling the clearing of transactions in a much more complicated way.
+For now, I have hackily swapped the market order `None` price for the current `reference_price` when dealing with the broker system.
+This has the nasty side effect of adding a `reference_price` keyword parameter to many of functions involved in handling new orders, but we can stomach this for now.
+Ultimately, I'm sure we'll want to come back to handling the clearing of transactions in a much more complicated way.
