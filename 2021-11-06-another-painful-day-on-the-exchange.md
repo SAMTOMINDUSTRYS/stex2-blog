@@ -22,3 +22,4 @@ However, as I move toward making changes that interact with my early-access brok
 
 For now, I have hackily swapped the market order `None` price for the current `reference_price` when dealing with the broker system.
 This has [a few nasty side effects](https://github.com/SAMTOMINDUSTRYS/stex2s-python/issues/3) such as necessitating a `reference_price` keyword parameter on many of functions involved in handling new orders, but we can stomach this debt for now as ultimately we'll want to come back to handling the clearing of transactions in a much more complicated life-like way.
+Amusingly, my first end to end test of the changes was "successful" in the sense that the exchange was perfectly happy filling `inf` price buy orders with `-inf` price sell orders.
