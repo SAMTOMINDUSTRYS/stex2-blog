@@ -1,4 +1,4 @@
-## Hello world
+## Hello Twitter
 **2022-03-26 / hello / Sam**
 
 I just told Twitter that we are building a stock exchange so I thought I better update the blog. If you are reading this, thank you for your continued interest in Sam and Tom Industrys produce.
